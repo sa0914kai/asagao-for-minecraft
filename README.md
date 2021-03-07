@@ -1,4 +1,7 @@
-! [icon](doc/img/asagao_logo_face3.png)
+<div align="center">
+  <img src="doc/img/asagao_logo_face3.png" alt="header" title="asagao-minecraft header">
+</div>
+
 
 # はじめに
 
