@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="doc/img/asagao_logo_face3.png" alt="header" title="asagao-minecraft header">
+  <img src="doc/img/asagao_logo_face3.png" alt="header" title="asagao-for-minecraft header">
 </div>
 
 
 # はじめに
 
-## asagao-minecraftとは
+## asagao-for-minecraftとは
 
 Minecraftを遊んでいるとき以外もサーバー代金が発生するのは無駄です。
 Discordから指定のメッセージを送信すると、ConohHaにMinecraft用のVM(バーチャルマシンサーバー)を構築、もしくは(データを保存の上)VMの破棄を行います。
@@ -21,9 +21,9 @@ Discordから指定のメッセージを送信すると、ConohHaにMinecraft用
 
 朝顔は夏の朝に咲く花です。咲いたその日のうちにしぼんでしまいます。儚いですね。
 
-asagao-minecraftもConoHaのVMを構築し、破棄します。
+asagao-for-minecraftもConoHaのVMを構築し、破棄します。
 
-一度しか咲かない朝顔と違い、asagao-minecraftは何度でも構築と破棄を繰り返します。
+一度しか咲かない朝顔と違い、asagao-for-minecraftは何度でも構築と破棄を繰り返します。
 
 ~~作者が朝顔は何度も咲くと勘違いして名付けました。~~
 
@@ -68,8 +68,8 @@ DISCORD_TOKENを設定するとConoHaAPIを使わないコマンドは動くよ�
 CONOHA_API_VM_PLAN_FLAVOR_UUIDは使用するConoHaのプランのIDです。
 `/mc plan`とDiscordのminecraftチャンネルで投稿すると、ConoHaのプラン一覧を表示してくれます。「g-c3m2d100」は3Core, 2GB memory, 容量100GBのはず。
 
-VM_AND_IMAGE_NAMEはConoHaで作成するVMのネームタグ(instance_name_tag)とimageの名前に使用されます。「asagao-minecraft-{VM_AND_IMAGE_NAME}」となります(例:VM_AND_IMAGE_NAME=testとすると、VMのネームタグとimageの名前は「asagao-minecraft-test」となります)。
-デフォルトのVMのネームタグとimageの名前は「asagao-minecraft」です。
+VM_AND_IMAGE_NAMEはConoHaで作成するVMのネームタグ(instance_name_tag)とimageの名前に使用されます。「asagao-for-minecraft-{VM_AND_IMAGE_NAME}」となります(例:VM_AND_IMAGE_NAME=testとすると、VMのネームタグとimageの名前は「asagao-for-minecraft-test」となります)。
+デフォルトのVMのネームタグとimageの名前は「asagao-for-minecraft」です。
 
 ADMIN_USER_IDは管理してる人のユーザーIDです。
 `/mc userid`と投稿すると、投稿した人のユーザーIDを表示してくれます。
@@ -97,7 +97,7 @@ ConoHaでサーバー追加をクリックし、Minecraft用のVMを作成して
 - プラン = 1GB以上
 - イメージタイプ = 好きな方(私はJava版)
 - root パスワード = 何でもいい
-- ネームタグ = asagao-minecraft もしくはVM_AND_IMAGE_NAMEを設定してるならasagao-minecraft-{VM_AND_IMAGE_NAME}
+- ネームタグ = asagao-for-minecraft もしくはVM_AND_IMAGE_NAMEを設定してるならasagao-for-minecraft-{VM_AND_IMAGE_NAME}
 
 この設定でサーバー追加(VM作成)します。
 
@@ -145,7 +145,7 @@ imageやVMを削除する前にその両方が有効な状態かチェックし�
 
 imageの判別にはimageの名前(name)、VMの判別にはVMのネームタグ(instance_name_tag)を使用しています。同じものを複数作成しないでください。
 
-asagao-minecraftはDiscordBotとConoHaAPIを用いています。
+asagao-for-minecraftは[discord.py](https://github.com/Rapptz/discord.py)とConoHaAPIを用いています。アイコンの作成には[Textcraft](https://textcraft.net/)を使用しています。
 
 
 # 最後に
