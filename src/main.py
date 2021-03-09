@@ -14,6 +14,7 @@ from config import *
 
 
 client = discord.Client()
+client.isProcessing = False
 
 # 起動時
 @client.event
@@ -27,10 +28,20 @@ async def on_message(_message):
     return
 
   if _message.content in utility.full_commands('open'):
+    if client.isProcessing:
+      await utility.post_embed_failed(_message, f"You can only run one at a time.\nCanceled: {utility.full_commands('open')}")
+      return None
+    client.isProcessing = True
     await conoha_main.create_vm_from_image(_message)
+    client.isProcessing = False
 
   if _message.content in utility.full_commands('close'):
+    if client.isProcessing:
+      await utility.post_embed_failed(_message, f"You can only run one at a time.\nCanceled: {utility.full_commands('close')}")
+      return None
+    client.isProcessing = True
     await conoha_main.create_image_from_vm(_message)
+    client.isProcessing = False
 
   if _message.content in utility.full_commands('help'):
     await utility.post_asagao_minecraft_commands(_message)
