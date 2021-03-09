@@ -93,7 +93,7 @@ async def create_vm_from_image(_message):
   wait_time_first = 0
   wait_every_time = 10
   time.sleep(wait_time_first)
-  for i in range(10):
+  for i in range(3):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
     if servers == None:
       continue
@@ -136,6 +136,10 @@ async def create_vm_from_image(_message):
       if response.status_code == 204:
         await _message.channel.send('> Success: image is deleted.')
         break
+      else:
+        await _message.channel.send(f"> delete CONOHA_API_IMAGE_SERVICE/v2/images/[image['id']]: {str(response.status_code)}\n\
+          > False: Could not remove image.")
+      time.sleep(wait_every_time)
     except requests.exceptions.RequestException as e:
       return None
 
@@ -226,14 +230,17 @@ async def create_image_from_vm(_message):
   }
   try:
     for i in range(3):
+      # toda: get server id propcess here.
       response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id_for_minecraft+'/action', data=json.dumps(data), headers=headers)
       if response.status_code == 202:
         await _message.channel.send('> Success: create Image.')
         break
       else:
-        await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: {response.status_code}.')
+        await utility.post_embed_failed(_message, f'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: {response.status_code}.')
+      time.sleep(wait_every_time)
   except requests.exceptions.RequestException as e:
     await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: RequestException.')
+    return None
 
   # Image作成完了まで待機
   await _message.channel.send('> Creating Image...')
@@ -248,6 +255,7 @@ async def create_image_from_vm(_message):
       await _message.channel.send(f'> Create image done. \n\
                                    > Create image time = {str(wait_time_first+i*wait_every_time)}(s).')
       break
+    time.sleep(wait_every_time)
 
   # VM削除
   await _message.channel.send('> Removing VM...')
@@ -270,10 +278,11 @@ async def create_image_from_vm(_message):
         await _message.channel.send('> Success: Remove VM.')
         break
       else:
-        await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {response.status_code}.')
+        await utility.post_embed_failed(_message, f'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {response.status_code}.')
         time.sleep(wait_every_time)
   except requests.exceptions.RequestException as e:
     await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException.')
+    return None
 
   await utility.post_embed_complite(_message, 
     'complete remove vm.', 
