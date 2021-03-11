@@ -137,6 +137,25 @@ async def create_vm_from_image(_message):
       return None
 
   
+  # image削除完了を待つ
+  await _message.channel.send('> Removing image...')
+  wait_time_first = 10
+  wait_every_time = 20
+  number_of_trials = 15
+  for i in range(number_of_trials):
+    images = await conoha_wrap.get_images(_message)
+    if images == None:
+      continue
+    if len(images) == 0:
+      await _message.channel.send(f'> Removed image done. \n\
+                                    > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
+      break
+    if i == number_of_trials-1:
+      await utility.post_embed_failed(_message, 'Could not remove image.')
+      return None
+    time.sleep(wait_every_time)
+
+
   await utility.post_embed_complite(_message, 
     'complete create vm.', 
     'no problem')
