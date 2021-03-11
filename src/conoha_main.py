@@ -90,7 +90,6 @@ async def create_vm_from_image(_message):
       return None
     time.sleep(wait_every_time)
 
-
   # ipAddress表示
   server_addresses = servers[0]['addresses']
   ip_address = ''
@@ -106,7 +105,6 @@ async def create_vm_from_image(_message):
   else:
     await utility.post_embed_failed(_message, 'Could not get ip address.')
     return None
-
 
   # imageを削除
   await _message.channel.send('> Start remove used image.')
@@ -136,7 +134,6 @@ async def create_vm_from_image(_message):
     if i == number_of_trials-1:
       return None
 
-  
   # image削除完了を待つ
   await _message.channel.send('> Removing image...')
   wait_time_first = 10
@@ -154,7 +151,6 @@ async def create_vm_from_image(_message):
       await utility.post_embed_failed(_message, 'Could not remove image.')
       return None
     time.sleep(wait_every_time)
-
 
   await utility.post_embed_complite(_message, 
     'complete create vm.', 
