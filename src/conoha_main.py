@@ -275,7 +275,7 @@ async def create_image_from_vm(_message):
     time.sleep(wait_every_time)
 
   # VM削除
-  await _message.channel.send('> Removing VM...')
+  await _message.channel.send('> Start remove VM...')
   wait_time_first = 0
   wait_every_time = 10
   conoha_api_token = await conoha_wrap.get_conoha_api_token(_message)
@@ -303,6 +303,24 @@ async def create_image_from_vm(_message):
   except requests.exceptions.RequestException as e:
     await utility.post_embed_failed(_message, 'delete CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException.')
     return None
+
+  # VM削除完了を待つ
+  await _message.channel.send('> Removing VM...')
+  wait_time_first = 10
+  wait_every_time = 20
+  number_of_trials = 15
+  for i in range(number_of_trials):
+    servers = await conoha_wrap.get_servers_for_minecraft(_message)
+    if servers == None:
+      continue
+    if len(servers) == 0:
+      await _message.channel.send(f'> Removed VM done. \n\
+                                    > Removed VM time = {str(wait_time_first+i*wait_every_time)}(s).')
+      break
+    if i == number_of_trials-1:
+      await utility.post_embed_failed(_message, 'Could not remove VM.')
+      return None
+    time.sleep(wait_every_time)
 
   await utility.post_embed_complite(_message, 
     'complete remove vm.', 
