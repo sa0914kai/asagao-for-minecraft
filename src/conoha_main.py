@@ -158,13 +158,6 @@ async def create_image_from_vm(_message):
   if len(images) >= 1:
     return None
   
-  servers = await conoha_wrap.get_servers_for_minecraft(_message)
-  if servers == None:
-    return None
-  if len(servers) == 0:
-    return None
-  server_id_for_minecraft = servers[0]['id']
-  
   # VMを停止する
   await _message.channel.send('> start shutdown VM...')
   servers = await conoha_wrap.get_servers_for_minecraft(_message)
@@ -182,6 +175,7 @@ async def create_image_from_vm(_message):
       'os-stop': None
     }
     try:
+      server_id_for_minecraft = servers[0]['id']
       response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id_for_minecraft+'/action', data=json.dumps(data), headers=headers)
       if response.status_code == 202:
         await _message.channel.send('> Success: stopped VM.')
