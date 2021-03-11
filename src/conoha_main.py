@@ -229,14 +229,20 @@ async def create_image_from_vm(_message):
     }
   }
   try:
-    for i in range(3):
-      # toda: get server id propcess here.
+    number_of_trials = 3
+    for i in range(number_of_trials):
+      servers = await conoha_wrap.get_servers_for_minecraft(_message)
+      if servers == None or  len(servers) == 0:
+        continue
+      server_id_for_minecraft = servers[0]['id']
       response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id_for_minecraft+'/action', data=json.dumps(data), headers=headers)
       if response.status_code == 202:
         await _message.channel.send('> Success: create Image.')
         break
       else:
-        await utility.post_embed_failed(_message, f'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: {response.status_code}.')
+        await utility.post_embed_failed(_message, f'[{i}/{number_of_trials}] post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: {response.status_code}.')
+      if i ==number_of_trials-1:
+        return None
       time.sleep(wait_every_time)
   except requests.exceptions.RequestException as e:
     await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: RequestException.')
