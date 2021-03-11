@@ -136,8 +136,8 @@ async def create_vm_from_image(_message):
 
   # image削除完了を待つ
   await _message.channel.send('> Removing image...')
-  wait_time_first = 10
-  wait_every_time = 20
+  wait_time_first = 5
+  wait_every_time = 10
   number_of_trials = 15
   for i in range(number_of_trials):
     images = await conoha_wrap.get_images(_message)
@@ -302,8 +302,8 @@ async def create_image_from_vm(_message):
 
   # VM削除完了を待つ
   await _message.channel.send('> Removing VM...')
-  wait_time_first = 10
-  wait_every_time = 20
+  wait_time_first = 5
+  wait_every_time = 10
   number_of_trials = 15
   for i in range(number_of_trials):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
