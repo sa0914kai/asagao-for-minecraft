@@ -120,19 +120,23 @@ async def create_vm_from_image(_message):
   wait_time_first = 0
   wait_every_time = 10
   time.sleep(wait_time_first)
-  for i in range(10):
+  number_of_trials = 5
+  for i in range(number_of_trials):
     try:
       response = requests.delete(CONOHA_API_IMAGE_SERVICE+'/v2/images/'+image['id'], headers=headers)
       if response.status_code == 204:
         await _message.channel.send(f'> Success: image is deleted.')
         break
       else:
-        await _message.channel.send(f"> delete CONOHA_API_IMAGE_SERVICE/v2/images/[image['id']]: {str(response.status_code)}\n\
+        await _message.channel.send(f"> [{i}/{number_of_trials}] delete CONOHA_API_IMAGE_SERVICE/v2/images/[image['id']]: {str(response.status_code)}\n\
           > False: Could not remove image.")
       time.sleep(wait_every_time)
     except requests.exceptions.RequestException as e:
+      await utility.post_embed_failed(_message, "delete CONOHA_API_IMAGE_SERVICE/v2/images/[image['id']]: RequestException.")
+    if i == number_of_trials-1:
       return None
 
+  
   await utility.post_embed_complite(_message, 
     'complete create vm.', 
     'no problem')
