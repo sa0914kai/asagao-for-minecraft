@@ -94,17 +94,15 @@ async def create_vm_from_image(_message):
   # ipAddress表示
   server_addresses = servers[0]['addresses']
   ip_address = ''
-  if len(server_addresses) >= 1:
-    for display_nic_key in server_addresses: # ex: "ext-133-130-48-0-xxx"
-      adresses_ip4_and_ip6 = server_addresses[display_nic_key]
-      for address in adresses_ip4_and_ip6:
-        if address['version'] == 4:
-          ip_address = address['addr']
+  for display_nic_key in server_addresses: # ex: "ext-133-130-48-0-xxx"
+    adresses_ip4_and_ip6 = server_addresses[display_nic_key]
+    for address in adresses_ip4_and_ip6:
+      if address['version'] == 4:
+        ip_address = address['addr']
   if ip_address != '':
     await utility.post_embed_complite(_message, 
       'Hello Minecraft World!', 
       f'ip address: {ip_address}')
-    await _message.channel.send(f'> Display ip address time = {str(wait_time_first+i*wait_every_time)}(s).')
   else:
     await utility.post_embed_failed(_message, 'Could not get ip address.')
     return None
