@@ -72,6 +72,7 @@ async def create_vm_from_image(_message):
   time.sleep(wait_time_first)
   server_status = ''
   number_of_trials = 20
+  servers = []
   for i in range(number_of_trials):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
     if servers == None:
@@ -91,34 +92,23 @@ async def create_vm_from_image(_message):
 
 
   # ipAddress表示
-  await _message.channel.send('> Start get ip adress.')
-  wait_time_first = 0
-  wait_every_time = 10
-  time.sleep(wait_time_first)
-  for i in range(3):
-    servers = await conoha_wrap.get_servers_for_minecraft(_message)
-    if servers == None:
-      continue
-    if len(servers) == 0:
-      await utility.post_embed_failed(_message, 'VM create failed, server not exist.')
-    server_addresses = servers[0]['addresses']
-    ip_address = ''
-    if len(server_addresses) >= 1:
-      for display_nic_key in server_addresses: # ex: "ext-133-130-48-0-xxx"
-        adresses_ip4_and_ip6 = server_addresses[display_nic_key]
-        for address in adresses_ip4_and_ip6:
-          if address['version'] == 4:
-            ip_address = address['addr']
-    if ip_address != '':
-      await utility.post_embed_complite(_message, 
-        'Hello Minecraft World!', 
-        f'ip address: {ip_address}')
-      await _message.channel.send(f'> Display ip address time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
-    time.sleep(wait_every_time)
-  if server_status != 'ACTIVE':
-    await utility.post_embed_failed(_message, 'server_status is not ACTIVE.')
+  server_addresses = servers[0]['addresses']
+  ip_address = ''
+  if len(server_addresses) >= 1:
+    for display_nic_key in server_addresses: # ex: "ext-133-130-48-0-xxx"
+      adresses_ip4_and_ip6 = server_addresses[display_nic_key]
+      for address in adresses_ip4_and_ip6:
+        if address['version'] == 4:
+          ip_address = address['addr']
+  if ip_address != '':
+    await utility.post_embed_complite(_message, 
+      'Hello Minecraft World!', 
+      f'ip address: {ip_address}')
+    await _message.channel.send(f'> Display ip address time = {str(wait_time_first+i*wait_every_time)}(s).')
+  else:
+    await utility.post_embed_failed(_message, 'Could not get ip address.')
     return None
+
 
   # imageを削除
   await _message.channel.send('> Start remove used image.')
