@@ -134,7 +134,7 @@ async def create_vm_from_image(_message):
     try:
       response = requests.delete(CONOHA_API_IMAGE_SERVICE+'/v2/images/'+image['id'], headers=headers)
       if response.status_code == 204:
-        await _message.channel.send('> Success: image is deleted.')
+        await _message.channel.send(f'> Success: image is deleted.')
         break
       else:
         await _message.channel.send(f"> delete CONOHA_API_IMAGE_SERVICE/v2/images/[image['id']]: {str(response.status_code)}\n\
@@ -245,9 +245,9 @@ async def create_image_from_vm(_message):
   # Image作成完了まで待機
   await _message.channel.send('> Creating Image...')
   wait_time_first = 70
-  wait_every_time = 10
+  wait_every_time = 30
   time.sleep(wait_time_first)
-  for i in range(10):
+  for i in range(20):
     exist_vm_and_image = await conoha_wrap.exist_both_vm_and_image(_message)
     if exist_vm_and_image == None or not exist_vm_and_image:
       continue
