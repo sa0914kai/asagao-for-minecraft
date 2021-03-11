@@ -260,13 +260,13 @@ async def create_image_from_vm(_message):
   # VM削除
   await _message.channel.send('> Removing VM...')
   wait_time_first = 0
-  wait_every_time = 10
+  wait_every_time = 20
   conoha_api_token = await conoha_wrap.get_conoha_api_token(_message)
   if conoha_api_token == None:
     return None
   headers = {'Accept': 'application/json', 'X-Auth-Token': conoha_api_token}
   try:
-    for i in range(3):
+    for i in range(6):
       servers = await conoha_wrap.get_servers_for_minecraft(_message)
       if servers == None:
         continue
@@ -278,10 +278,10 @@ async def create_image_from_vm(_message):
         await _message.channel.send('> Success: Remove VM.')
         break
       else:
-        await utility.post_embed_failed(_message, f'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {response.status_code}.')
+        await utility.post_embed_failed(_message, f'delete CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {response.status_code}.')
         time.sleep(wait_every_time)
   except requests.exceptions.RequestException as e:
-    await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException.')
+    await utility.post_embed_failed(_message, 'delete CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException.')
     return None
 
   await utility.post_embed_complite(_message, 
