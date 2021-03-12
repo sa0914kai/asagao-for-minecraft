@@ -259,11 +259,8 @@ async def create_image_from_vm(_message):
   number_of_trials = 20
   for i in range(number_of_trials):
     exist_vm_and_image = await conoha_wrap.exist_both_vm_and_image(_message)
-    if exist_vm_and_image == None or not exist_vm_and_image:
-      continue
-    else:
-      await _message.channel.send(f'> Create image done. \n\
-                                   > Create image time = {str(wait_time_first+i*wait_every_time)}(s).')
+    if exist_vm_and_image:
+      await _message.channel.send(f'> Done.Create image time = {str(wait_time_first+i*wait_every_time)}(s).')
       break
     if i == number_of_trials-1:
       utility.post_embed_failed(_message, 'Could not finish create image.')
