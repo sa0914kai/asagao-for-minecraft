@@ -93,7 +93,7 @@ async def create_vm_from_image(_message):
       return None
     time.sleep(wait_every_time)
 
-  # ipAddress表示
+  # ipAddress取得
   server_addresses = servers[0]['addresses']
   ip_address = ''
   for display_nic_key in server_addresses: # ex: "ext-133-130-48-0-xxx"
@@ -101,11 +101,7 @@ async def create_vm_from_image(_message):
     for address in adresses_ip4_and_ip6:
       if address['version'] == 4:
         ip_address = address['addr']
-  if ip_address != '':
-    await utility.post_embed_complite(_message, 
-      'Hello Minecraft World!', 
-      f'ip address: {ip_address}')
-  else:
+  if ip_address == '':
     await utility.post_embed_failed(_message, 'Could not get ip address.')
     return None
 
@@ -137,8 +133,13 @@ async def create_vm_from_image(_message):
     if i == number_of_trials-1:
       return None
 
+  # ip address表示
+  await utility.post_embed_complite(_message, 
+        'Hello Minecraft World!', 
+        f'ip address: **{ip_address}**')
+
   # image削除完了を待つ
-  await _message.channel.send('> Removing image...')
+  # await _message.channel.send('> Removing image...')
   wait_time_first = 5
   wait_every_time = 5
   number_of_trials = 15
@@ -146,17 +147,17 @@ async def create_vm_from_image(_message):
     images = await conoha_wrap.get_images(_message)
     if images != None:
       if len(images) == 0:
-        await _message.channel.send(f'> Removed image done. \n\
-                                      > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
+        # await _message.channel.send(f'> Removed image done. \n\
+        #                               > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
         break
     if i == number_of_trials-1:
       await utility.post_embed_failed(_message, 'Could not remove image.')
       return None
     time.sleep(wait_every_time)
 
-  await utility.post_embed_complite(_message, 
-    'complete create vm.', 
-    'no problem')
+  # await utility.post_embed_complite(_message, 
+  #   'complete create vm.', 
+  #   'no problem')
 
 
 async def create_image_from_vm(_message):
