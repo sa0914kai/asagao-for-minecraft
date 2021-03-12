@@ -168,7 +168,7 @@ async def create_image_from_vm(_message):
     return None
   
   # VMを停止する
-  await _message.channel.send('> start shutdown VM...')
+  await _message.channel.send('> Start shutdown VM...')
   servers = await conoha_wrap.get_servers_for_minecraft(_message)
   if servers == None:
     return None
@@ -203,16 +203,14 @@ async def create_image_from_vm(_message):
   server_status = ''
   for i in range(10):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
-    if servers == None:
-      continue
-    if len(servers) == 0:
-      await _message.channel.send('> Failed: VM shutdown failed, because server not exist.')
-      return None
-    server_status = servers[0]['status']
-    if server_status == 'SHUTOFF':
-      await _message.channel.send(f'> VM shutdown done. \n\
-                                   > VM shutdown time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
+    if servers != None:
+      if len(servers) == 0:
+        await _message.channel.send('> Failed: VM shutdown failed, because server not exist.')
+        return None
+      server_status = servers[0]['status']
+      if server_status == 'SHUTOFF':
+        await _message.channel.send(f'> Done. VM shutdown time = {str(wait_time_first+i*wait_every_time)}(s).')
+        break
     time.sleep(wait_every_time)
   if server_status != 'SHUTOFF':
     await _message.channel.send('> VM shutdown failed.')
