@@ -108,7 +108,7 @@ async def create_vm_from_image(_message):
   # imageを削除
   await _message.channel.send('> Start remove used image.')
   exist_vm_and_image = await conoha_wrap.exist_both_vm_and_image(_message)
-  if exist_vm_and_image == None:
+  if exist_vm_and_image != True:
     return None
   conoha_api_token = await conoha_wrap.get_conoha_api_token(_message)
   if conoha_api_token == None:
@@ -271,6 +271,9 @@ async def create_image_from_vm(_message):
 
   # VM削除
   await _message.channel.send('> Start remove VM...')
+  exist_vm_and_image = await conoha_wrap.exist_both_vm_and_image(_message)
+  if exist_vm_and_image != True:
+    return None
   wait_time_first = 0
   wait_every_time = 10
   conoha_api_token = await conoha_wrap.get_conoha_api_token(_message)
