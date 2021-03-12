@@ -34,7 +34,7 @@ async def post_embed_complite(_message, _title, _content):
 
 
 async def post_embed_failed(_message, _content):
-  _content = _content + '\nPlease try again or contact admin user, or confirm command.'
+  _content = _content + f'\nPlease try again or contact admin user, or confirm command.\n{ADMIN_USER_ID}'
   await post_embed(_message, _title='Failed', _content=_content, _color=discord.Color.gold())
 
 
@@ -49,6 +49,13 @@ async def post_embed_error(_message, _content):
 
 async def post_user_id(_message):
   await post_embed_complite(_message, 'user id', str(_message.author.id))
+
+
+async def post_version(_message):
+  content = f"\
+    > {VERSION}\n\
+  "
+  await post_embed_complite(_message, 'asagao-for-minecraft version', content)
 
 
 async def post_asagao_minecraft_commands(_message):
@@ -68,5 +75,8 @@ async def post_asagao_minecraft_commands(_message):
     > user id.\n\
     > {str(full_commands(['myid', 'userid']))}\n\
     \n\
+    > this app version.\n\
+    > {str(full_commands('version'))}\n\
+    \n\
   "
-  await post_embed_complite(_message, 'asagao-minecraft commands', content)
+  await post_embed_complite(_message, 'asagao-for-minecraft commands', content)

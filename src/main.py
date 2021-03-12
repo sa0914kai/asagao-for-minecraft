@@ -52,5 +52,8 @@ async def on_message(_message):
   if _message.content in utility.full_commands(['myid', 'userid']):
     await utility.post_user_id(_message)
 
+  if _message.content in utility.full_commands('version'):
+    await utility.post_version(_message)
+
 
 client.run(DISCORD_TOKEN)
