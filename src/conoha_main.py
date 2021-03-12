@@ -10,15 +10,20 @@ from config import *
 
 async def create_vm_from_image(_message):
   await _message.channel.send('> minecraft world opening...')
-  # サーバーのVMが存在していなくて、ImageがActiveの時だけ実行可能
+  # サーバーのVMが存在しているとき実行しない
   await _message.channel.send('> checking...')
-  images = await conoha_wrap.get_images(_message)
   servers = await conoha_wrap.get_servers_for_minecraft(_message)
-  if images == None or servers == None:
-    await utility.post_embed_failed(_message, 'Could not get image id or VMs.')
+  if servers == None:
+    await utility.post_embed_failed(_message, 'Could not get VM data.\nPlease try again.')
     return None
   if len(servers) != 0:
     await utility.post_embed_failed(_message, 'Exist VM already.')
+    return None
+
+  # imageを取得して、存在しなかったら実行しない
+  images = await conoha_wrap.get_images(_message)
+  if images == None:
+    await utility.post_embed_failed(_message, 'Could not get image.\nPlease try again.')
     return None
   if len(images) == 0:
     await utility.post_embed_failed(_message, 'Not Exist Image.')
