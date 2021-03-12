@@ -10,15 +10,20 @@ from config import *
 
 async def create_vm_from_image(_message):
   await _message.channel.send('> minecraft world opening...')
-  # サーバーのVMが存在していなくて、ImageがActiveの時だけ実行可能
+  # サーバーのVMが存在しているとき実行しない
   await _message.channel.send('> checking...')
-  images = await conoha_wrap.get_images(_message)
   servers = await conoha_wrap.get_servers_for_minecraft(_message)
-  if images == None or servers == None:
-    await utility.post_embed_failed(_message, 'Could not get image id or VMs.')
+  if servers == None:
+    await utility.post_embed_failed(_message, 'Could not get VM data.\nPlease try again.')
     return None
   if len(servers) != 0:
     await utility.post_embed_failed(_message, 'Exist VM already.')
+    return None
+
+  # imageを取得して、存在しなかったら実行しない
+  images = await conoha_wrap.get_images(_message)
+  if images == None:
+    await utility.post_embed_failed(_message, 'Could not get image.\nPlease try again.')
     return None
   if len(images) == 0:
     await utility.post_embed_failed(_message, 'Not Exist Image.')
@@ -75,22 +80,20 @@ async def create_vm_from_image(_message):
   servers = []
   for i in range(number_of_trials):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
-    if servers == None:
-      continue
-    if len(servers) == 0:
-      await _message.channel.send('> Failed: VM create failed, server vm is not exist.')
-      return None
-    server_status = servers[0]['status']
-    if server_status == 'ACTIVE':
-      await _message.channel.send(f'> VM build done. \n\
-                                   > VM build time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
+    if servers != None:
+      if len(servers) == 0:
+        await _message.channel.send('> Failed: VM create failed, server vm is not exist.')
+        return None
+      server_status = servers[0]['status']
+      if server_status == 'ACTIVE':
+        await _message.channel.send(f'> Done. VM build time = {str(wait_time_first+i*wait_every_time)}(s).')
+        break
     if i == number_of_trials-1:
       await utility.post_embed_failed(_message, 'VM create failed.\nserver_status is not ACTIVE.')
       return None
     time.sleep(wait_every_time)
 
-  # ipAddress表示
+  # ipAddress取得
   server_addresses = servers[0]['addresses']
   ip_address = ''
   for display_nic_key in server_addresses: # ex: "ext-133-130-48-0-xxx"
@@ -98,11 +101,7 @@ async def create_vm_from_image(_message):
     for address in adresses_ip4_and_ip6:
       if address['version'] == 4:
         ip_address = address['addr']
-  if ip_address != '':
-    await utility.post_embed_complite(_message, 
-      'Hello Minecraft World!', 
-      f'ip address: {ip_address}')
-  else:
+  if ip_address == '':
     await utility.post_embed_failed(_message, 'Could not get ip address.')
     return None
 
@@ -134,27 +133,31 @@ async def create_vm_from_image(_message):
     if i == number_of_trials-1:
       return None
 
+  # ip address表示
+  await utility.post_embed_complite(_message, 
+        'Hello Minecraft World!', 
+        f'ip address: **{ip_address}**')
+
   # image削除完了を待つ
-  await _message.channel.send('> Removing image...')
+  # await _message.channel.send('> Removing image...')
   wait_time_first = 5
-  wait_every_time = 10
+  wait_every_time = 5
   number_of_trials = 15
   for i in range(number_of_trials):
     images = await conoha_wrap.get_images(_message)
-    if images == None:
-      continue
-    if len(images) == 0:
-      await _message.channel.send(f'> Removed image done. \n\
-                                    > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
+    if images != None:
+      if len(images) == 0:
+        # await _message.channel.send(f'> Removed image done. \n\
+        #                               > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
+        break
     if i == number_of_trials-1:
       await utility.post_embed_failed(_message, 'Could not remove image.')
       return None
     time.sleep(wait_every_time)
 
-  await utility.post_embed_complite(_message, 
-    'complete create vm.', 
-    'no problem')
+  # await utility.post_embed_complite(_message, 
+  #   'complete create vm.', 
+  #   'no problem')
 
 
 async def create_image_from_vm(_message):
@@ -163,19 +166,25 @@ async def create_image_from_vm(_message):
   await _message.channel.send('> checking...')
   images = await conoha_wrap.get_images(_message)
   if images == None:
+    await utility.post_embed_failed(_message, 'Could not get image info.\nPlease try again.')
     return None
   if len(images) >= 1:
+    await utility.post_embed_failed(_message, 'Image is already exist.')
     return None
-  
-  # VMを停止する
-  await _message.channel.send('> start shutdown VM...')
+
+  # VMを取得して、VMが取得できなかったら実行しない
   servers = await conoha_wrap.get_servers_for_minecraft(_message)
   if servers == None:
+    await utility.post_embed_failed(_message, 'Could not get VM.')
     return None
   if len(servers) == 0:
-    await _message.channel.send('> Failed: VM shutdown failed, because server not exist.')
+    await utility.post_embed_failed(_message, 'VM shutdown failed, because server not exist.')
     return None
-  if servers[0]['status'] != 'SHUTOFF':
+  server = servers[0]
+  server_id = server['id']
+
+  # VMを停止する
+  if server['status'] != 'SHUTOFF':
     conoha_api_token = await conoha_wrap.get_conoha_api_token(_message)
     if conoha_api_token == None:
       return None
@@ -184,16 +193,15 @@ async def create_image_from_vm(_message):
       'os-stop': None
     }
     try:
-      server_id_for_minecraft = servers[0]['id']
-      response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id_for_minecraft+'/action', data=json.dumps(data), headers=headers)
+      response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id+'/action', data=json.dumps(data), headers=headers)
       if response.status_code == 202:
         await _message.channel.send('> Success: stopped VM.')
       else:
-        await _message.channel.send(f'> post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: {str(response.status_code)}\n\
+        await _message.channel.send(f'> post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {str(response.status_code)}\n\
           > False: Could not stop.')
         return None
     except requests.exceptions.RequestException as e:
-      await _message.channel.send(f'> post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: RequestException')
+      await _message.channel.send(f'> post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException')
       return None
 
   # VMのシャットダウンが完了するまで待機
@@ -203,16 +211,14 @@ async def create_image_from_vm(_message):
   server_status = ''
   for i in range(10):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
-    if servers == None:
-      continue
-    if len(servers) == 0:
-      await _message.channel.send('> Failed: VM shutdown failed, because server not exist.')
-      return None
-    server_status = servers[0]['status']
-    if server_status == 'SHUTOFF':
-      await _message.channel.send(f'> VM shutdown done. \n\
-                                   > VM shutdown time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
+    if servers != None:
+      if len(servers) == 0:
+        await _message.channel.send('> Failed: VM shutdown failed, because server not exist.')
+        return None
+      server_status = servers[0]['status']
+      if server_status == 'SHUTOFF':
+        await _message.channel.send(f'> Done. VM shutdown time = {str(wait_time_first+i*wait_every_time)}(s).')
+        break
     time.sleep(wait_every_time)
   if server_status != 'SHUTOFF':
     await _message.channel.send('> VM shutdown failed.')
@@ -234,21 +240,17 @@ async def create_image_from_vm(_message):
   try:
     number_of_trials = 3
     for i in range(number_of_trials):
-      servers = await conoha_wrap.get_servers_for_minecraft(_message)
-      if servers == None or  len(servers) == 0:
-        continue
-      server_id_for_minecraft = servers[0]['id']
-      response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id_for_minecraft+'/action', data=json.dumps(data), headers=headers)
+      response = requests.post(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id+'/action', data=json.dumps(data), headers=headers)
       if response.status_code == 202:
         await _message.channel.send('> Success: create Image.')
         break
       else:
-        await utility.post_embed_failed(_message, f'[{i}/{number_of_trials}] post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: {response.status_code}.')
+        await _message.channel.send(f'[{i}/{number_of_trials}] post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {response.status_code}.')
       if i == number_of_trials-1:
         return None
       time.sleep(wait_every_time)
   except requests.exceptions.RequestException as e:
-    await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id_for_minecraft]: RequestException.')
+    await utility.post_embed_failed(_message, 'post CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException.')
     return None
 
   # Image作成完了まで待機
@@ -259,13 +261,10 @@ async def create_image_from_vm(_message):
   number_of_trials = 20
   for i in range(number_of_trials):
     exist_vm_and_image = await conoha_wrap.exist_both_vm_and_image(_message)
-    if exist_vm_and_image == None or not exist_vm_and_image:
-      continue
-    else:
-      await _message.channel.send(f'> Create image done. \n\
-                                   > Create image time = {str(wait_time_first+i*wait_every_time)}(s).')
+    if exist_vm_and_image:
+      await _message.channel.send(f'> Done.Create image time = {str(wait_time_first+i*wait_every_time)}(s).')
       break
-    if i == number_of_trials:
+    if i == number_of_trials-1:
       utility.post_embed_failed(_message, 'Could not finish create image.')
       return None
     time.sleep(wait_every_time)
@@ -281,21 +280,15 @@ async def create_image_from_vm(_message):
   try:
     number_of_trials = 5
     for i in range(number_of_trials):
-      servers = await conoha_wrap.get_servers_for_minecraft(_message)
-      if servers == None:
-        continue
-      if len(servers) == 0:
-        break
-      server_id = servers[0]['id']
       response = requests.delete(CONOHA_API_COMPUTE_SERVICE+'/servers/'+server_id, headers=headers)
       if response.status_code == 204:
         await _message.channel.send('> Success: Remove VM.')
         break
       else:
         await utility.post_embed_failed(_message, f'[{i+1}/{number_of_trials}]delete CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: {response.status_code}.')
-        if i == number_of_trials-1:
-          return None
-        time.sleep(wait_every_time)
+      if i == number_of_trials-1:
+        return None
+      time.sleep(wait_every_time)
   except requests.exceptions.RequestException as e:
     await utility.post_embed_failed(_message, 'delete CONOHA_API_COMPUTE_SERVICE/servers/[server_id]: RequestException.')
     return None
@@ -310,8 +303,7 @@ async def create_image_from_vm(_message):
     if servers == None:
       continue
     if len(servers) == 0:
-      await _message.channel.send(f'> Removed VM done. \n\
-                                    > Removed VM time = {str(wait_time_first+i*wait_every_time)}(s).')
+      await _message.channel.send(f'> Done. Removed VM time = {str(wait_time_first+i*wait_every_time)}(s).')
       break
     if i == number_of_trials-1:
       await utility.post_embed_failed(_message, 'Could not remove VM.')
