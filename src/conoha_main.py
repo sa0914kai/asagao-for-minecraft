@@ -80,16 +80,14 @@ async def create_vm_from_image(_message):
   servers = []
   for i in range(number_of_trials):
     servers = await conoha_wrap.get_servers_for_minecraft(_message)
-    if servers == None:
-      continue
-    if len(servers) == 0:
-      await _message.channel.send('> Failed: VM create failed, server vm is not exist.')
-      return None
-    server_status = servers[0]['status']
-    if server_status == 'ACTIVE':
-      await _message.channel.send(f'> VM build done. \n\
-                                   > VM build time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
+    if servers != None:
+      if len(servers) == 0:
+        await _message.channel.send('> Failed: VM create failed, server vm is not exist.')
+        return None
+      server_status = servers[0]['status']
+      if server_status == 'ACTIVE':
+        await _message.channel.send(f'> Done. VM build time = {str(wait_time_first+i*wait_every_time)}(s).')
+        break
     if i == number_of_trials-1:
       await utility.post_embed_failed(_message, 'VM create failed.\nserver_status is not ACTIVE.')
       return None
@@ -146,12 +144,11 @@ async def create_vm_from_image(_message):
   number_of_trials = 15
   for i in range(number_of_trials):
     images = await conoha_wrap.get_images(_message)
-    if images == None:
-      continue
-    if len(images) == 0:
-      await _message.channel.send(f'> Removed image done. \n\
-                                    > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
-      break
+    if images != None:
+      if len(images) == 0:
+        await _message.channel.send(f'> Removed image done. \n\
+                                      > Removed image time = {str(wait_time_first+i*wait_every_time)}(s).')
+        break
     if i == number_of_trials-1:
       await utility.post_embed_failed(_message, 'Could not remove image.')
       return None
@@ -168,8 +165,10 @@ async def create_image_from_vm(_message):
   await _message.channel.send('> checking...')
   images = await conoha_wrap.get_images(_message)
   if images == None:
+    await utility.post_embed_failed(_message, 'Could not get image info.\nPlease try again.')
     return None
   if len(images) >= 1:
+    await utility.post_embed_failed(_message, 'Image is already exist.')
     return None
 
   # VMを取得して、VMが取得できなかったら実行しない
