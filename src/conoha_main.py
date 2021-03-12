@@ -265,7 +265,7 @@ async def create_image_from_vm(_message):
       await _message.channel.send(f'> Create image done. \n\
                                    > Create image time = {str(wait_time_first+i*wait_every_time)}(s).')
       break
-    if i == number_of_trials:
+    if i == number_of_trials-1:
       utility.post_embed_failed(_message, 'Could not finish create image.')
       return None
     time.sleep(wait_every_time)
