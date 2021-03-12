@@ -34,8 +34,7 @@ async def post_embed_complite(_message, _title, _content):
 
 
 async def post_embed_failed(_message, _content):
-  _content = _content + '\nPlease try again or contact admin user.\n\
-    Please remove unnecessary vm server or image.'
+  _content = _content + '\nPlease try again or contact admin user, or confirm command.'
   await post_embed(_message, _title='Failed', _content=_content, _color=discord.Color.gold())
 
 
