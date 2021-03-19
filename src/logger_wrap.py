@@ -1,7 +1,11 @@
+from pathlib import Path
 import logging
 import logging.handlers
 
-def logger_init(name='', log_path='../log/index.log'):
+
+def logger(name=''):
+  log_path = Path(__file__).parent
+  log_path /= '../log/index.log'
   logger = logging.getLogger(name)
   logger.setLevel(logging.DEBUG)
   rotation_handler = logging.handlers.RotatingFileHandler(
