@@ -16,6 +16,7 @@ CONOHA_API_VM_PLAN_FLAVOR_UUID = os.environ.get('CONOHA_API_VM_PLAN_FLAVOR_UUID'
 # option
 VM_AND_IMAGE_NAME = 'asagao-for-minecraft-'+os.environ.get('VM_AND_IMAGE_NAME', '') if os.environ.get('VM_AND_IMAGE_NAME', '') != '' else 'asagao-for-minecraft'
 ADMIN_USER_ID = f"<@{os.environ.get('ADMIN_USER_ID', '')}>" if os.environ.get('ADMIN_USER_ID', '') != '' else ''
+DISCORD_CHANNEL_NAMES = os.environ.get('DISCORD_CHANNEL_NAMES', 'minecraft, minecraft-test').replace(' ', '').split(',')
 
 
 # Fixed value

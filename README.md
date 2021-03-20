@@ -74,6 +74,10 @@ VM_AND_IMAGE_NAMEはConoHaで作成するVMのネームタグ(instance_name_tag)
 ADMIN_USER_IDは管理してる人のユーザーIDです。
 `/mc userid`と投稿すると、投稿した人のユーザーIDを表示してくれます。
 
+DISCORD_CHANNEL_NAMESは`/mc`コマンドを実行できるDiscordチャンネル名をコンマ区切りで指定します。
+デフォルトは`minecraft, minecraft-test`が指定されてます。
+例えばこれに加えて`minecraft-dev`を追加したいのであれば、DISCORD_CHANNEL_NAMESに`minecraft, minecraft-test, minecraft-dev`と入力します。
+
 - 必須の環境変数
   - DISCORD_TOKEN
   - CONOHA_API_TENANT_ID
@@ -87,6 +91,7 @@ ADMIN_USER_IDは管理してる人のユーザーIDです。
 - オプション環境変数
   - VM_AND_IMAGE_NAME
   - ADMIN_USER_ID
+  - DISCORD_CHANNEL_NAMES
 
 ## ConoHaでMinecraft用のVMを作成する
 
