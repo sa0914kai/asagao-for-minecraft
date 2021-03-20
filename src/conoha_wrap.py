@@ -5,9 +5,13 @@ import requests
 import json
 import utility
 from config import *
+import logger_wrap
+
+logger = logger_wrap.logger(__name__)
 
 
 async def get_conoha_api_token(_message):
+  logger.info('get_conoha_api_token')
   headers = {'Accept': 'application/json'}
   data = {
     'auth': {
@@ -31,12 +35,16 @@ async def get_conoha_api_token(_message):
 
 
 async def get_images(_message):
+  logger.info('get_images')
   conoha_api_token = await get_conoha_api_token(_message)
   if conoha_api_token == None:
     return None
   headers = {'Accept': 'application/json', 'X-Auth-Token': conoha_api_token}
   try:
     response = requests.get(CONOHA_API_IMAGE_SERVICE+'/v2/images', headers=headers)
+    logger.info(f'response.status_code: {response.status_code}\n\
+      response.text: \n\
+      {json.loads(response.text)}\n')
     if response.status_code == 200:
       images = json.loads(response.text)['images']
       images = [i for i in images if i['name'] == VM_AND_IMAGE_NAME]
@@ -53,6 +61,7 @@ async def get_images(_message):
 
 
 async def get_image_status(_message, _image):
+  logger.info('get_image_status')
   if _image == None:
     await utility.post_embed_failed(_message, 'Could not get image id.')
     return None
@@ -64,6 +73,9 @@ async def get_image_status(_message, _image):
   headers = {'Accept': 'application/json', 'X-Auth-Token': conoha_api_token}
   try:
     response = requests.get(CONOHA_API_COMPUTE_SERVICE+'/images/'+image_id, headers=headers)
+    logger.info(f'response.status_code: {response.status_code}\n\
+      response.text: \n\
+      {json.loads(response.text)}\n')
     if response.status_code == 200:
       image_status = json.loads(response.text)['image']['status']
       return image_status
@@ -76,12 +88,16 @@ async def get_image_status(_message, _image):
 
 
 async def get_servers_for_minecraft(_message):
+  logger.info('get_servers_for_minecraft')
   conoha_api_token = await get_conoha_api_token(_message)
   if conoha_api_token == None:
     return None
   headers = {'Accept': 'application/json', 'X-Auth-Token': conoha_api_token}
   try:
     response = requests.get(CONOHA_API_COMPUTE_SERVICE+'/servers/detail', headers=headers)
+    logger.info(f'response.status_code: {response.status_code}\n\
+      response.text: \n\
+      {json.loads(response.text)}\n')
     if response.status_code == 200:
       servers = json.loads(response.text)['servers']
       servers = [s for s in servers if s['metadata']['instance_name_tag'] == VM_AND_IMAGE_NAME]
@@ -99,6 +115,7 @@ async def get_servers_for_minecraft(_message):
 
 
 async def exist_both_vm_and_image(_message):
+  logger.info('exist_both_vm_and_image')
   images = await get_images(_message)
   if images == None:
     await utility.post_embed_failed(_message, ' Could not get images.')
