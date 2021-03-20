@@ -74,6 +74,10 @@ VM_AND_IMAGE_NAMEはConoHaで作成するVMのネームタグ(instance_name_tag)
 ADMIN_USER_IDは管理してる人のユーザーIDです。
 `/mc userid`と投稿すると、投稿した人のユーザーIDを表示してくれます。
 
+DISCORD_CHANNEL_NAMESは`/mc`コマンドを実行できるDiscordチャンネル名をコンマ区切りで指定します。
+デフォルトは`minecraft, minecraft-test`が指定されてます。
+例えばこれに加えて`minecraft-dev`を追加したいのであれば、DISCORD_CHANNEL_NAMESに`minecraft, minecraft-test, minecraft-dev`と入力します。
+
 - 必須の環境変数
   - DISCORD_TOKEN
   - CONOHA_API_TENANT_ID
@@ -87,6 +91,39 @@ ADMIN_USER_IDは管理してる人のユーザーIDです。
 - オプション環境変数
   - VM_AND_IMAGE_NAME
   - ADMIN_USER_ID
+  - DISCORD_CHANNEL_NAMES
+
+<!---
+<details><summary>※環境変数を使えない環境で必要なパラメーターを設定する</summary><div>
+
+`env.json`というファイル名で以下のファイルを作成し、上記を参考に値を入力したのちに、ssh接続などでサーバーの`main.py`と同じ階層にファイルをおいてください。
+(もしくはssh接続でファイルを作成したのちに、vimなどで以下の内容を入力してもいいと思います)
+
+```
+{
+  "DISCORD_TOKEN": "",
+  "CONOHA_API_TENANT_ID": "",
+  "CONOHA_API_IDENTITY_SERVICE": "",
+  "CONOHA_API_USER_NAME": "",
+  "CONOHA_API_USER_PASSWORD": "",
+
+  "CONOHA_API_IMAGE_SERVICE": "",
+  "CONOHA_API_COMPUTE_SERVICE": "",
+  "CONOHA_API_NETWORK_SERVICE": "",
+  "CONOHA_API_VM_PLAN_FLAVOR_UUID": "",
+
+
+  "VM_AND_IMAGE_NAME": "",
+  "ADMIN_USER_ID": "",
+  "DISCORD_CHANNEL_NAMES": ""
+}
+
+```
+
+`env.json`がリポジトリのルートにあると、環境変数より優先してそちらの値を使用します。
+
+</div></details>
+-->
 
 ## ConoHaでMinecraft用のVMを作成する
 
@@ -96,7 +133,7 @@ ConoHaでサーバー追加をクリックし、Minecraft用のVMを作成して
 - VPS割引きっぷ = 利用しない
 - プラン = 1GB以上
 - イメージタイプ = 好きな方(私はJava版)
-- root パスワード = 何でもいい
+- root パスワード = 必ず控えておいてください。マイクラの難易度を変更したり、サーバーの設定に必要です(万一忘れた場合は手動でイメージからVMを作り直してパスワードを再設定してください)。
 - ネームタグ = asagao-for-minecraft もしくはVM_AND_IMAGE_NAMEを設定してるならasagao-for-minecraft-{VM_AND_IMAGE_NAME}
 
 この設定でサーバー追加(VM作成)します。

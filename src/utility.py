@@ -46,7 +46,7 @@ async def post_embed_complite(_message, _title, _content):
 
 
 async def post_embed_failed(_message, _content):
-  _content = _content + f'\nPlease try again or contact admin user, or confirm command.\n{ADMIN_USER_ID}'
+  _content = _content + f'\nPlease try again or contact admin user, or confirm command.\n<@{ADMIN_USER_ID}>'
   await post_embed(_message, _title='Failed', _content=_content, _color=discord.Color.gold())
   logger.warning(f'post_embed_failed\n\
     Failed\n\
@@ -57,7 +57,7 @@ async def post_embed_error(_message, _content):
     Stop asagao-minecraft server.\n\
     Can not run all commands.\n\
     Please contact admin user.\n\
-    {ADMIN_USER_ID}'
+    <@{ADMIN_USER_ID}>'
   await post_embed(_message, _title='Error', _content=_content, _color=discord.Color.red())
   logger.error(f'post_embed_error\n\
     Error\n\
