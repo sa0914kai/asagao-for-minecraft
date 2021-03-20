@@ -133,7 +133,7 @@ ConoHaでサーバー追加をクリックし、Minecraft用のVMを作成して
 - VPS割引きっぷ = 利用しない
 - プラン = 1GB以上
 - イメージタイプ = 好きな方(私はJava版)
-- root パスワード = 何でもいい
+- root パスワード = 必ず控えておいてください。マイクラの難易度を変更したり、サーバーの設定に必要です(万一忘れた場合は手動でイメージからVMを作り直してパスワードを再設定してください)。
 - ネームタグ = asagao-for-minecraft もしくはVM_AND_IMAGE_NAMEを設定してるならasagao-for-minecraft-{VM_AND_IMAGE_NAME}
 
 この設定でサーバー追加(VM作成)します。
