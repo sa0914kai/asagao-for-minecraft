@@ -27,6 +27,11 @@ def parse_json(_json):
   return _json
 
 
+async def post_message(_message,  _content):
+  await _message.channel.send(_content)
+  logger.info(_content)
+
+
 async def post_embed(_message, _title='', _content='', _color=discord.Color.default):
   embed = discord.Embed(title=_title,description=_content, color=_color)
   await _message.channel.send(embed=embed)
@@ -36,16 +41,16 @@ async def post_embed_complite(_message, _title, _content):
   _content = _content + '\ndone.'
   await post_embed(_message, _title=_title, _content=_content, _color=discord.Color.green())
   logger.info(f'post_embed_complite\n\
-    \t{_title}\n\
-    \t{_content}\n')
+    {_title}\n\
+    {_content}')
 
 
 async def post_embed_failed(_message, _content):
   _content = _content + f'\nPlease try again or contact admin user, or confirm command.\n{ADMIN_USER_ID}'
   await post_embed(_message, _title='Failed', _content=_content, _color=discord.Color.gold())
   logger.warning(f'post_embed_failed\n\
-    \tFailed\n\
-    \t{_content}\n')
+    Failed\n\
+    {_content}')
 
 async def post_embed_error(_message, _content):
   _content = _content + f'\n\
@@ -54,9 +59,9 @@ async def post_embed_error(_message, _content):
     Please contact admin user.\n\
     {ADMIN_USER_ID}'
   await post_embed(_message, _title='Error', _content=_content, _color=discord.Color.red())
-  logger.error(f'post_embed_failed\n\
-    \tError\n\
-    \t{_content}\n')
+  logger.error(f'post_embed_error\n\
+    Error\n\
+    {_content}')
 
 async def post_user_id(_message):
   await post_embed_complite(_message, 'user id', str(_message.author.id))

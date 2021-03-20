@@ -9,12 +9,13 @@ def logger(name=''):
   logger = logging.getLogger(name)
   logger.setLevel(logging.DEBUG)
   rotation_handler = logging.handlers.RotatingFileHandler(
-      log_path, encoding='utf-8',
-      maxBytes=50*1000,
+      log_path,
+      encoding='utf-8',
+      maxBytes=100*1000,
       backupCount=10,
     )
   rotation_handler.setLevel(logging.DEBUG)
-  formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(name)s - %(funcName)s - %(message)s')
+  formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s - %(name)s - %(funcName)s \n%(message)s\n')
   rotation_handler.setFormatter(formatter)
   logger.addHandler(rotation_handler)
   return logger
