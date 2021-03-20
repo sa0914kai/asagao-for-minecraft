@@ -93,6 +93,38 @@ DISCORD_CHANNEL_NAMESは`/mc`コマンドを実行できるDiscordチャンネ�
   - ADMIN_USER_ID
   - DISCORD_CHANNEL_NAMES
 
+<!---
+<details><summary>※環境変数を使えない環境で必要なパラメーターを設定する</summary><div>
+
+`env.json`というファイル名で以下のファイルを作成し、上記を参考に値を入力したのちに、ssh接続などでサーバーの`main.py`と同じ階層にファイルをおいてください。
+(もしくはssh接続でファイルを作成したのちに、vimなどで以下の内容を入力してもいいと思います)
+
+```
+{
+  "DISCORD_TOKEN": "",
+  "CONOHA_API_TENANT_ID": "",
+  "CONOHA_API_IDENTITY_SERVICE": "",
+  "CONOHA_API_USER_NAME": "",
+  "CONOHA_API_USER_PASSWORD": "",
+
+  "CONOHA_API_IMAGE_SERVICE": "",
+  "CONOHA_API_COMPUTE_SERVICE": "",
+  "CONOHA_API_NETWORK_SERVICE": "",
+  "CONOHA_API_VM_PLAN_FLAVOR_UUID": "",
+
+
+  "VM_AND_IMAGE_NAME": "",
+  "ADMIN_USER_ID": "",
+  "DISCORD_CHANNEL_NAMES": ""
+}
+
+```
+
+`env.json`がリポジトリのルートにあると、環境変数より優先してそちらの値を使用します。
+
+</div></details>
+-->
+
 ## ConoHaでMinecraft用のVMを作成する
 
 ConoHaでサーバー追加をクリックし、Minecraft用のVMを作成していきます。
