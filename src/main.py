@@ -24,7 +24,7 @@ async def on_ready():
 # メッセージ受信時
 @client.event
 async def on_message(_message):
-  if _message.author.bot or not(_message.channel.name in ['minecraft', 'minecraft-test']):
+  if _message.author.bot or not(_message.channel.name in DISCORD_CHANNEL_NAMES):
     return
 
   if _message.content in utility.full_commands('open'):
