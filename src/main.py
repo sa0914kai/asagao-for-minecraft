@@ -4,22 +4,61 @@
 import sys
 import time
 import discord
+from discord.ext import tasks
 import requests
 import json
 import conoha_wrap
 import conoha_main
 import conoha_sub
 import utility
+import datetime
 from config import *
 
 
 client = discord.Client()
 client.isProcessing = False
+client.channel = None
 
 # 起動時
 @client.event
 async def on_ready():
   print('discord login')
+  if NOTICE_HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
+    client.channel = discord.utils.get(client.get_all_channels(), name=DISCORD_CHANNEL_NAMES[0])
+    sidekiq.start()
+
+
+# 定期的に実行したいfunction
+if NOTICE_HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
+  @tasks.loop(minutes=31)
+  async def sidekiq():
+    if datetime.datetime.now().strftime('%H') == '19':
+      is_should_open_and_close = await conoha_wrap.is_should_open_and_close(client.channel)
+      if is_should_open_and_close:
+        await utility.post_embed_failed(client.channel, f"expiration date warninig:\n\
+          <@{ADMIN_USER_ID}>\n\
+          It's been 30 days since last created the Image.\n\
+          Please run this command:\n\
+          > {utility.full_commands('open_and_close')}")
+
+
+async def open_vm(_channel):
+  if client.isProcessing:
+    await utility.post_embed_failed(_channel, f"You can only run one at a time.\nCanceled: {utility.full_commands('open')}")
+    return None
+  client.isProcessing = True
+  await conoha_main.create_vm_from_image(_channel)
+  client.isProcessing = False
+
+
+async def close_vm(_channel):
+  if client.isProcessing:
+    await utility.post_embed_failed(_channel, f"You can only run one at a time.\nCanceled: {utility.full_commands('close')}")
+    return None
+  client.isProcessing = True
+  await conoha_main.create_image_from_vm(_channel)
+  client.isProcessing = False
+
 
 # メッセージ受信時
 @client.event
@@ -30,20 +69,10 @@ async def on_message(_message):
   channel = _message.channel
 
   if _message.content in utility.full_commands('open'):
-    if client.isProcessing:
-      await utility.post_embed_failed(channel, f"You can only run one at a time.\nCanceled: {utility.full_commands('open')}")
-      return None
-    client.isProcessing = True
-    await conoha_main.create_vm_from_image(channel)
-    client.isProcessing = False
+    await open_vm(channel)
 
   if _message.content in utility.full_commands('close'):
-    if client.isProcessing:
-      await utility.post_embed_failed(channel, f"You can only run one at a time.\nCanceled: {utility.full_commands('close')}")
-      return None
-    client.isProcessing = True
-    await conoha_main.create_image_from_vm(channel)
-    client.isProcessing = False
+    await close_vm(channel)
 
   if _message.content in utility.full_commands('help'):
     await utility.post_asagao_minecraft_commands(channel)
@@ -57,5 +86,9 @@ async def on_message(_message):
   if _message.content in utility.full_commands('version'):
     await utility.post_version(channel)
 
+  if _message.content in utility.full_commands('open_and_close'):
+    await open_vm(channel)
+    time.sleep(10)
+    await close_vm(channel)
 
 client.run(DISCORD_TOKEN)
