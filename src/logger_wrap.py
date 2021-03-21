@@ -11,7 +11,7 @@ def logger(name=''):
   rotation_handler = logging.handlers.RotatingFileHandler(
       log_path,
       encoding='utf-8',
-      maxBytes=100*1000,
+      maxBytes=256*1000,
       backupCount=10,
     )
   rotation_handler.setLevel(logging.DEBUG)

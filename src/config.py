@@ -47,3 +47,7 @@ if os.path.exists('env.json'):
   ADMIN_USER_ID = json['ADMIN_USER_ID'] 
   DISCORD_CHANNEL_NAMES = ('minecraft, minecraft-test' if json['DISCORD_CHANNEL_NAMES'] == '' else json['DISCORD_CHANNEL_NAMES']).replace(' ', '').split(',')
 
+
+
+# secret
+HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME = os.environ.get('HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME', '')
