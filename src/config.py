@@ -4,7 +4,7 @@ import json
 
 # use environment var in os
 # Fixed value
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 # required
 DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN')
