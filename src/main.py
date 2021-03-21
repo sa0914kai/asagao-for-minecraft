@@ -23,13 +23,13 @@ client.channel = None
 @client.event
 async def on_ready():
   print('discord login')
-  if NOTICE_HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
+  if HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
     client.channel = discord.utils.get(client.get_all_channels(), name=DISCORD_CHANNEL_NAMES[0])
     sidekiq.start()
 
 
 # 定期的に実行したいfunction
-if NOTICE_HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
+if HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
   @tasks.loop(minutes=31)
   async def sidekiq():
     if datetime.datetime.now().strftime('%H') == '19':
