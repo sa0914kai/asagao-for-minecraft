@@ -91,4 +91,9 @@ async def on_message(_message):
     time.sleep(10)
     await close_vm(channel)
 
+  if ALLOW_PROCESS_KILL_COMMAND:
+    if _message.content in utility.full_commands('exit'):
+      await utility.post_embed_complite(channel, 'exit', 'python process is finished.')
+      sys.exit()
+
 client.run(DISCORD_TOKEN)
