@@ -3,7 +3,7 @@ import json
 
 
 # Fixed value
-VERSION = '0.1.1'
+VERSION = '0.1.'
 
 
 # use environment var in os
