@@ -27,25 +27,25 @@ DISCORD_CHANNEL_NAMES = os.environ.get('DISCORD_CHANNEL_NAMES', 'minecraft, mine
 
 # use environment var in json file
 if os.path.exists('env.json'):
-  json_file = open('env.json', 'r')
-  json = json.load(json_file)
+  with open('env.json', 'r') as json_file:
+    json = json.load(json_file)
 
-  # required
-  DISCORD_TOKEN = json['DISCORD_TOKEN']
-  CONOHA_API_TENANT_ID = json['CONOHA_API_TENANT_ID']
-  CONOHA_API_IDENTITY_SERVICE = json['CONOHA_API_IDENTITY_SERVICE']
-  CONOHA_API_USER_NAME = json['CONOHA_API_USER_NAME']
-  CONOHA_API_USER_PASSWORD = json['CONOHA_API_USER_PASSWORD']
+    # required
+    DISCORD_TOKEN = json['DISCORD_TOKEN']
+    CONOHA_API_TENANT_ID = json['CONOHA_API_TENANT_ID']
+    CONOHA_API_IDENTITY_SERVICE = json['CONOHA_API_IDENTITY_SERVICE']
+    CONOHA_API_USER_NAME = json['CONOHA_API_USER_NAME']
+    CONOHA_API_USER_PASSWORD = json['CONOHA_API_USER_PASSWORD']
 
-  CONOHA_API_IMAGE_SERVICE = json['CONOHA_API_IMAGE_SERVICE']
-  CONOHA_API_COMPUTE_SERVICE = json['CONOHA_API_COMPUTE_SERVICE']
-  CONOHA_API_NETWORK_SERVICE = json['CONOHA_API_NETWORK_SERVICE']
-  CONOHA_API_VM_PLAN_FLAVOR_UUID = json['CONOHA_API_VM_PLAN_FLAVOR_UUID']
+    CONOHA_API_IMAGE_SERVICE = json['CONOHA_API_IMAGE_SERVICE']
+    CONOHA_API_COMPUTE_SERVICE = json['CONOHA_API_COMPUTE_SERVICE']
+    CONOHA_API_NETWORK_SERVICE = json['CONOHA_API_NETWORK_SERVICE']
+    CONOHA_API_VM_PLAN_FLAVOR_UUID = json['CONOHA_API_VM_PLAN_FLAVOR_UUID']
 
-  # option
-  VM_AND_IMAGE_NAME = 'asagao-for-minecraft-'+json['VM_AND_IMAGE_NAME'] if json['VM_AND_IMAGE_NAME'] != '' else 'asagao-for-minecraft'
-  ADMIN_USER_ID = json['ADMIN_USER_ID'] 
-  DISCORD_CHANNEL_NAMES = ('minecraft, minecraft-test' if json['DISCORD_CHANNEL_NAMES'] == '' else json['DISCORD_CHANNEL_NAMES']).replace(' ', '').split(',')
+    # option
+    VM_AND_IMAGE_NAME = 'asagao-for-minecraft-'+json['VM_AND_IMAGE_NAME'] if json['VM_AND_IMAGE_NAME'] != '' else 'asagao-for-minecraft'
+    ADMIN_USER_ID = json['ADMIN_USER_ID'] 
+    DISCORD_CHANNEL_NAMES = ('minecraft, minecraft-test' if json['DISCORD_CHANNEL_NAMES'] == '' else json['DISCORD_CHANNEL_NAMES']).replace(' ', '').split(',')
 
 
 
