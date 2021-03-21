@@ -1,6 +1,7 @@
 import sys
 import time
 import discord
+import datetime
 import requests
 import json
 import utility
@@ -131,4 +132,43 @@ async def exist_both_vm_and_image(_message):
   server_status = servers[0]['status']
   if image_status == 'ACTIVE' and (server_status in ['ACTIVE', 'SHUTOFF']):
     return True
+  return False
+
+
+async def is_should_open_and_close(_message):
+  images = await get_images(_message)
+  if len(images) == 0:
+    return False
+  
+  image = images[0]
+  created_at = image['created_at']
+  created_date, created_time = created_at.split('T')
+  created_date = created_date.split('-')
+  created_date = datetime.date(int(created_date[0]), int(created_date[1]), int(created_date[2]))
+
+  today = datetime.date.today()
+
+  if (created_date + datetime.timedelta(days=25)) < datetime.date.today():
+    return True
+
+  return False
+
+
+async def is_should_close(_message):
+  servers = await get_servers_for_minecraft(_message)
+
+  if len(servers) == 0:
+    return False
+
+  server = servers[0]
+  created_at = server['created']
+  created_date, created_time = created_at.split('T')
+  created_date = created_date.split('-')
+  created_date = datetime.date(int(created_date[0]), int(created_date[1]), int(created_date[2]))
+
+  today = datetime.date.today()
+
+  if (created_date + datetime.timedelta(days=1)) < datetime.date.today():
+    return True
+
   return False
