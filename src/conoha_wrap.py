@@ -148,10 +148,16 @@ async def is_should_open_and_close(_channel):
 
   today = datetime.date.today()
 
-  await utility.post_message(_channel, f'> expair check\n> image created_at: {created_date}\n> today: {today}')
-
   if (created_date + datetime.timedelta(days=30)) < datetime.date.today():
     return True
+
+  if (created_date + datetime.timedelta(days=10)) == datetime.date.today():
+    await utility.post_message(_channel, f'> \n> image created_at: {created_date}\n> today: {today}')
+    return False
+
+  if (created_date + datetime.timedelta(days=20)) == datetime.date.today():
+    await utility.post_message(_channel, f'> \n> image created_at: {created_date}\n> today: {today}')
+    return False
 
   return False
 
