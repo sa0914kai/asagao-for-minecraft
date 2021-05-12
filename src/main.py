@@ -30,9 +30,9 @@ async def on_ready():
 
 # 定期的に実行したいfunction
 if HOUR_FOR_IMAGE_LEAVE_ALONE_LONG_TIME != '':
-  @tasks.loop(minutes=31)
+  @tasks.loop(minutes=60)
   async def sidekiq():
-    if datetime.datetime.now().strftime('%H') == '19':
+    if datetime.datetime.now().strftime('%H') == '19-9':
       is_should_open_and_close = await conoha_wrap.is_should_open_and_close(client.channel)
       if is_should_open_and_close:
         await utility.post_embed_failed(client.channel, f"expiration date warninig:\n\
