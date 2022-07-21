@@ -8,15 +8,15 @@ VERSION = '0.1.2'
 
 # use environment var in os
 # required
-DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN')
-CONOHA_API_TENANT_ID = os.environ.get('CONOHA_API_TENANT_ID')
-CONOHA_API_IDENTITY_SERVICE = os.environ.get('CONOHA_API_IDENTITY_SERVICE')
-CONOHA_API_USER_NAME = os.environ.get('CONOHA_API_USER_NAME')
-CONOHA_API_USER_PASSWORD = os.environ.get('CONOHA_API_USER_PASSWORD')
+DISCORD_TOKEN = os.environ.get('OTk5NTA1NTg1MTY0NzgzNzA2.GJzcNx.dDUxKCCT_7dBS77KnzA1BNc_wRvihWJG_EE8AE')
+CONOHA_API_TENANT_ID = os.environ.get('cbe2b7ca09d84dfc922bc64e4c60ef7e')
+CONOHA_API_IDENTITY_SERVICE = os.environ.get('https://identity.tyo2.conoha.io/v2.0')
+CONOHA_API_USER_NAME = os.environ.get('gncu31831431')
+CONOHA_API_USER_PASSWORD = os.environ.get('Sa0914kai.osaka')
 
-CONOHA_API_IMAGE_SERVICE = os.environ.get('CONOHA_API_IMAGE_SERVICE')
-CONOHA_API_COMPUTE_SERVICE = os.environ.get('CONOHA_API_COMPUTE_SERVICE')
-CONOHA_API_NETWORK_SERVICE = os.environ.get('CONOHA_API_NETWORK_SERVICE')
+CONOHA_API_IMAGE_SERVICE = os.environ.get('https://image-service.tyo2.conoha.io')
+CONOHA_API_COMPUTE_SERVICE = os.environ.get('https://compute.tyo2.conoha.io/v2/cbe2b7ca09d84dfc922bc64e4c60ef7e')
+CONOHA_API_NETWORK_SERVICE = os.environ.get('https://networking.tyo2.conoha.io')
 CONOHA_API_VM_PLAN_FLAVOR_UUID = os.environ.get('CONOHA_API_VM_PLAN_FLAVOR_UUID')
 
 # option
